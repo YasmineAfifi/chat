@@ -15,5 +15,5 @@ class Chat(models.Model):
 class ChatRoom(models.Model):
     name = models.CharField(max_length=225)
     
-    # def __str__(self):
-    #     return self.name
+    def __str__(self):
+        return self.name
