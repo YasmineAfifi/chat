@@ -10,12 +10,12 @@
     index page
 
     
-    <form method="post" id='indexForm'>
-        {% csrf_token %}
+    <!-- <form method="post" id='indexForm'> -->
+        <!-- {% csrf_token %} -->
 
         <input type="text" name="room_name" id="room_name">
-        <input type="submit" value="submit">
-    </form>
+        <button id="btn">Enter</button>
+    <!-- </form> -->
     
 </body>
 
@@ -24,39 +24,23 @@
 
 <script>
 
-const indexForm = document.getElementById('indexForm');
+const btn = document.getElementById('btn');
 
-indexForm.addEventListener('submit', (e) => {
-    e.preventDefault();
+btn.addEventListener('click', () => {
+
     const room_name = document.getElementById('room_name').value;
     window.location.href = '/chat/'+ room_name
 });
 
 
 </script>
+<script>
 
- {% comment %} <html>
-<head>
-    <meta charset="utf-8"/>
-    <title>Chat Rooms</title>
-</head>
-<body>
-    What chat room would you like to enter?<br>
-    <input id="room-name-input" type="text" size="100"><br>
-    <input id="room-name-submit" type="button" value="Enter">
 
-    <script>
-        document.querySelector('#room-name-input').focus();
-        document.querySelector('#room-name-input').onkeyup = function(e) {
-            if (e.key === 'Enter') {  // enter, return
-                document.querySelector('#room-name-submit').click();
-            }
-        };
+// document.querySelector('#room-name-input').onkeyup = function(e) {
+//     if (e.key === 'Enter') {  // enter, return
+//         document.querySelector('#room-name-submit').click();
+//     }
+// };
 
-        document.querySelector('#room-name-submit').onclick = function(e) {
-            var roomName = document.querySelector('#room-name-input').value;
-            window.location.pathname = '/chat/' + roomName + '/';
-        };
-    </script>
-</body>
-</html> {% endcomment %}
+</script>
