@@ -1,52 +1,108 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
 
 <head>
     <meta charset="utf-8" />
     <title>Chat Room</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.css" integrity="sha512-vEia6TQGr3FqC6h55/NdU3QSM5XR6HSl5fW71QTKrgeER98LIMGwymBVM867C1XHIkYD9nMTfWK2A0xcodKHNA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{% static 'css/output.css'%}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.js" integrity="sha512-hkvXFLlESjeYENO4CNi69z3A1puvONQV5Uh+G4TUDayZxSLyic5Kba9hhuiNLbHqdnKNMk2PxXKm0v7KDnWkYA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
-<div>
+<div class="flex justify-center ">
+<div class="w-1/2">
 
-    <div id="chatLog">
+    <div id="chatLog" class="bg-gray-50">
         {%for chat in chats%}
-        <div>{{chat}}</div>
+        <div class="bg-blue-500 text-white p-5 m-5">{{chat}}</div>
         {%endfor%}
     </div>
 
-    <div> <input id="messageInput" type="text" size="100"></div>
-    <button id="sendBtn">Send</button>
+    <div class="m-5"><div class="flex gap-2" id="yamo3en"><input id="messageInput" type="text" size="100" placeholder="Type a Message Here"><button id="sendBtn"><img src="{% static 'image/send1.png'%}" class="w-[25px]"></button></div></div>
+    <!-- <button id="sendBtn">Send</button> -->
+</div>
 
+</div>
     <script>
+
+
+var target = document.getElementById("yamo3en");
+
+// create an observer instance
+var observer = new MutationObserver(function (mutations) {
+  //loop through the detected mutations(added controls)
+  mutations.forEach(function (mutation) {
+    //addedNodes contains all detected new controls
+    if (mutation && mutation.addedNodes) {
+      mutation.addedNodes.forEach(function (elm) {
+
+        document.getElementsByClassName("emojionearea-editor")[0].addEventListener('keyup', function (e) {
+            
+        if (e.key === 'Enter' && !e.shiftKey) {
+
+       e.preventDefault();
+       sendMessage();
+     }
+    });
+      });
+    }
+  });
+});
+
+// pass in the target node, as well as the observer options
+observer.observe(target, {
+  childList: true
+});
+document.getElementById("messageInput")
+
+$('#messageInput .emojionearea .emojionearea-editor').on("input", function() {
+    console.log("input event fired");
+}, false);
+
+
+
         sendBtn = document.getElementById('sendBtn')
         let room_name = "{{ room }}";
         const chatSocket = new WebSocket('ws://' + window.location.host + '/ws/chat/' + room_name + '/');
+        const messageInput = $('#messageInput').emojioneArea({ pickerPosition: 'bottom' });
+            messageInput[0].emojioneArea.setFocus();
+
         //server receive msg
         chatSocket.onmessage = function (e) {
             const data = JSON.parse(e.data);
 
-            document.getElementById('chatLog').innerHTML += ("<div>" + data.message + '</div>');
+            document.getElementById('chatLog').innerHTML += ("<div class='bg-blue-500 text-white p-5 m-5'>" + data.message + "</div>");
         };
 
         chatSocket.onclose = function (e) {
             console.error('Chat closed');
         };
 
-        document.getElementById('messageInput').focus();
-        document.getElementById('messageInput').onkeyup = function (e) {
-            if (e.key === 'Enter') {
-                sendBtn.click();
-            }
-        };
+        messageInput.on('keyup', function (e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+       e.preventDefault();
+       sendMessage();
+     }
+    });
 
-        sendBtn.onclick = function (e) {
-            const messageInputDom = document.getElementById('messageInput');
-            const message = messageInputDom.value;
+        function sendMessage(){
+            const message = messageInput[0].emojioneArea.getText();
+
             chatSocket.send(JSON.stringify({
                 'message': message
             }));
-            messageInputDom.value = '';
+            messageInput[0].emojioneArea.setText('');
+            messageInput[0].emojioneArea.setFocus();
         };
+    
+       sendBtn.addEventListener('click',   function () {
+
+            sendMessage();
+        });
     </script>
+
+
     </body>
 
 </html>
