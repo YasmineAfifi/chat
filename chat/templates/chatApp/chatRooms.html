@@ -19,15 +19,14 @@
         {%endfor%}
     </div>
 
-    <div class="m-5"><div class="flex gap-2" id="yamo3en"><input id="messageInput" type="text" size="100" placeholder="Type a Message Here"><button id="sendBtn"><img src="{% static 'image/send1.png'%}" class="w-[25px]"></button></div></div>
-    <!-- <button id="sendBtn">Send</button> -->
+    <div class="m-5"><div class="flex gap-2" id="msginput"><input id="messageInput" type="text" size="100" placeholder="Type a Message Here"><button id="sendBtn"><img src="{% static 'image/send1.png'%}" class="w-[25px]"></button></div></div>
 </div>
 
 </div>
     <script>
 
 
-var target = document.getElementById("yamo3en");
+var target = document.getElementById("msginput");
 
 // create an observer instance
 var observer = new MutationObserver(function (mutations) {
@@ -54,12 +53,6 @@ var observer = new MutationObserver(function (mutations) {
 observer.observe(target, {
   childList: true
 });
-document.getElementById("messageInput")
-
-$('#messageInput .emojionearea .emojionearea-editor').on("input", function() {
-    console.log("input event fired");
-}, false);
-
 
 
         sendBtn = document.getElementById('sendBtn')
@@ -81,7 +74,7 @@ $('#messageInput .emojionearea .emojionearea-editor').on("input", function() {
 
         messageInput.on('keyup', function (e) {
         if (e.key === 'Enter' && !e.shiftKey) {
-       e.preventDefault();
+        e.preventDefault();
        sendMessage();
      }
     });
